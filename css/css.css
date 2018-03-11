@@ -1,0 +1,32 @@
+﻿@charset "utf-8";
+
+body {
+    background-color: #396DA5;
+    margin: 0px;
+    padding: 0px;
+    color: #fff;
+    font: "微软雅黑";
+    font-size: 14px;
+}
+
+.window {
+    border: 3px #ccc outset;
+    width: 680px;
+    height: 442px;
+    background-color: #000;
+    margin:50px auto;
+    overflow: hidden
+}
+
+.title {
+    background-color: #08246B;
+    padding: 2px;
+}
+
+#editor {
+    height: 420px;
+    border: 1px solid #ccc;
+    background-color: black;
+    color: white;
+    overflow-y: scroll;
+}

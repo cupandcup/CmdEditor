@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<head>
+    <meta charset="utf-8" />
+    <title>服务器</title>
+    <link href="css/css.css" rel="stylesheet" type="text/css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/1.10.2/jquery.min.js"></script>
+
+</head>
+<body>
+    <div class="window">
+        <div class="title">
+            <img src="css/cmd_w.svg" style="width:14px; height:14px; padding:1px; background-color:white;" />
+            <span>WEB CMD</span>
+        </div>
+        <div id="editor" onkeydown="editorChange();" onkeyup="">
+    
+        </div>
+    </div>
+    <input type="button"  onclick="test()" value="test"/>
+
+    <script type="text/javascript">
+        function test() {
+            alert(window.getSelection().getRangeAt(0).startOffset);
+        }
+
+        var cmdPrompt = "[admin@host_~]#";
+
+        initEditor();
+
+        //初始化
+        function initEditor() {
+            var editor = document.getElementById("editor");
+            editor.innerHTML += "<div>" + cmdPrompt + "</div>";
+            openOrCloseEditor("editor", "true");//开启元素编辑
+            bindBtnCommand();//给样式按钮绑定命令
+        }
+
+        /**
+        *
+        * 功能： 开启元素编辑功能
+        * 输入： el：编辑器ID; operate：Boolean值，表示启动还是关闭
+        */
+        function openOrCloseEditor(el, operate) {
+            var editor = document.getElementById(el);
+            editor.contentEditable = operate;
+        }
+
+        //按钮绑定命令
+        function bindBtnCommand() {
+            var btns = document.getElementsByTagName("button"),
+                btnConfigs = "backcolor|#f00|设置背景色 bold|null|字体加粗 indent|null|缩进 fontName|微软雅黑|转换字体".split(" "),
+                len = btnConfigs.length;
+            for (var i = 0, btnConfig; btnConfig = btnConfigs[i]; i++) {
+                (function (btnConfig, btn) {
+                    var msg = btnConfig.split("|"),
+                        lab = msg[0],
+                        value = msg[1],
+                        title = msg[2];
+                    btn.innerHTML = lab;
+                    btn.title = title;
+                    btn.onclick = function (e) {
+                        document.execCommand(lab, false, value);
+                    }
+                })(btnConfig, btns[i]);
+            }
+        }
+
+        //获取编辑器内嵌内容
+        function getContent(el) {
+            var editor = document.getElementById(el);
+            return editor.innerHTML;
+        }
+
+        //打印按钮绑定触发事件
+        document.getElementById("printContent").onclick = function (e) {
+            var content = getContent("editor");
+            document.write(content);
+        };
+
+        function editorChange() {
+            if (event.keyCode == 13) {
+                event.cancelBubble = true;
+                event.preventDefault();
+                event.stopPropagation();
+                var editor = document.getElementById("editor");
+                editor.innerHTML += "<div>" + cmdPrompt+"</div>";
+                $('#editor').children().last().prev().attr('contentEditable', false);
+                $('#editor').children().last().attr('contentEditable', true);
+                set_focus();
+                editor.scrollTop = editor.scrollHeight;
+            }
+            if (event.keyCode == 8) {
+                if (window.getSelection().getRangeAt(0).startOffset < (cmdPrompt.length+1)) {
+                    event.cancelBubble = true;
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+            }
+            if (event.keyCode == 46) {
+                if (window.getSelection().getRangeAt(0).startOffset < cmdPrompt.length) {
+                    event.cancelBubble = true;
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+            }
+        }
+
+
+        // 定位光标到末尾
+        function set_focus() {
+            el = document.getElementById('editor');
+            //el=el[0];  //jquery 对象转dom对象
+            el.focus();
+            if ($.support.msie) {
+                var range = document.selection.createRange();
+                this.last = range;
+                range.moveToElementText(el);
+                range.select();
+                document.selection.empty(); //取消选中
+            }
+            else {
+                var range = document.createRange();
+                range.selectNodeContents(el);
+                range.collapse(false);
+                var sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+        }
+    </script>
+    
+</body>
+</html> 
